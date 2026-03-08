@@ -1,40 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/webstorm-icon-logo.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>3D Molecule Simulator</title>
-  <link rel="stylesheet" href="/style.css">
+
+  <!-- JSmol 源文件在线目录 -->
+  <script type="text/javascript" src="https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js"></script>
+  <!-- 本地Javascript源文件 -->
+  <script src="src/main.js"></script>
+  <!-- CSS样式 -->
+  <link rel="stylesheet" href="./public/style.css">
+
 </head>
+
 <body>
-<header class="logo">
-  <a href="https://www.jetbrains.com/webstorm/">
-    <img src="/webstorm-logo.svg" alt="WebStorm logo" width="344"
-         height="90">
-  </a>
-</header>
-<main id="app">
-  <h1 class="title">
-    Kelvin. <br /> Your first project is up and running
-    now.
-  </h1>
-  <section class="counter">
-    <div class="counter-info">
-      <p class="counter-text">Counter is</p>
-      <p class="counter-value" id="counter-value"></p>
+<div class="container">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <h1>Chemical Structure Generator</h1>
+    <p>Enter a chemical formula:</p>
+    <input id="moleculeInput" type="text" placeholder="Example: H2O" />
+    <button onclick="generateMolecule()">Generate</button>
+
+    <div class="examples">
+      <p>Try examples:</p>
+      <button onclick="loadExample('H2O')">H2O</button>
+      <button onclick="loadExample('CO2')">CO2</button>
+      <button onclick="loadExample('CH4')">CH4</button>
+      <button onclick="loadExample('NH3')">NH3</button>
     </div>
-    <div class="counter-interaction">
-      <button id="increaseByOne" type="button">+1</button>
-      <button id="increaseByTwo" type="button">+2</button>
-      <button id="decreaseByOne" type="button">-1</button>
-      <button id="decreaseByTwo" type="button">-2</button>
+
+    <div class="status">
+      <p id="moleculeName">No molecule loaded</p>
     </div>
-  </section>
-</main>
-<footer class="technologies">
-  <img src="/technologies.svg" alt="List of supported technologies">
-</footer>
-<script type="module" src="/src/main.js"></script>
+
+    <p style="margin-top:40px;color:#666">(Current demo shows a static 3D molecule.)</p>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <h2>3D Molecule Viewer</h2>
+
+    <div id="viewer">
+      <!-- 背景层 -->
+      <div class="viewer-background"></div>
+
+      <!-- 3D分子容器 -->
+      <div id="viewer-canvas"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ----------------- MOLECULE GENERATION -----------------
+    function generateMolecule(){
+      let formula = document.getElementById("moleculeInput").value;
+      if(formula === ""){
+        alert("Please enter a chemical formula");
+        return;
+      }
+      document.getElementById("moleculeName").innerText = "Current Molecule: " + formula;
+      // 调用3D生成逻辑 (例如 JSmol)
+    }
+
+    function loadExample(formula){
+      document.getElementById("moleculeInput").value = formula;
+      generateMolecule();
+    }
+
+    // ----------------- FLOATING MOLECULES -----------------
+    const molecules = ["H₂O","CO₂","NH₃","CH₄","C₆H₆","O₂","N₂","H₂SO₄","NaCl"];
+    const floatingMolecules = [];
+    const numMolecules = 25; // 可调整
+
+    for (let i = 0; i < numMolecules; i++) {
+      const span = document.createElement("span");
+      span.className = "floating-molecule";
+      span.innerText = molecules[Math.floor(Math.random() * molecules.length)];
+      span.x = Math.random() * window.innerWidth;
+      span.y = Math.random() * window.innerHeight;
+      span.vx = (Math.random() - 0.5) * 1.5;
+      span.vy = (Math.random() - 0.5) * 1.5;
+      span.style.left = span.x + "px";
+      span.style.top = span.y + "px";
+      document.body.appendChild(span);
+      floatingMolecules.push(span);
+    }
+
+    function animateMolecules() {
+      for (const mol of floatingMolecules) {
+        mol.x += mol.vx;
+        mol.y += mol.vy;
+        if (mol.x < 0 || mol.x + mol.offsetWidth > window.innerWidth) mol.vx *= -1;
+        if (mol.y < 0 || mol.y + mol.offsetHeight > window.innerHeight) mol.vy *= -1;
+        mol.style.left = mol.x + "px";
+        mol.style.top = mol.y + "px";
+      }
+      requestAnimationFrame(animateMolecules);
+    }
+    animateMolecules();
+
+    window.addEventListener("resize", () => {
+      for (const mol of floatingMolecules) {
+        mol.x = Math.min(mol.x, window.innerWidth - mol.offsetWidth);
+        mol.y = Math.min(mol.y, window.innerHeight - mol.offsetHeight);
+      }
+    });
+  </script>
+</div>>
 </body>
 </html>

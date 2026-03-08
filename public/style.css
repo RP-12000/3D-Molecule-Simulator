@@ -1,187 +1,212 @@
-@font-face {
-    font-family: "JetBrains Sans";
-    src: url("fonts/JetBrainsSans-Regular.woff2");
+/* ---------------- RESET ---------------- */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
 }
 
-@font-face {
-    font-family: "JetBrains Mono";
-    src: url("fonts/JetBrainsMono-Regular.woff2");
+/* ---------------- BODY ---------------- */
+body{
+    min-height:100vh;
+    background:
+            radial-gradient(circle at 10% 20%, rgba(56,189,248,0.25), transparent 35%),
+            radial-gradient(circle at 80% 70%, rgba(14,165,233,0.25), transparent 40%),
+            linear-gradient(140deg,#020617,#0f172a,#020617);
+    color:#e5e7eb;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+    position:relative;
 }
 
-:root {
-    font-family: "JetBrains Sans", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #000000;
-    text-align: center;
+/* ---------------- FLOATING CHEMISTRY FORMULAS ---------------- */
+.floating-molecule {
+    position:fixed;
+    font-size:50px;
+    font-weight:bold;
+    color: rgba(255,255,255,0.15);
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+    white-space:nowrap;
+    text-shadow: 0 0 5px rgba(255,255,255,0.4);
 }
 
-body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 320px;
-    min-height: 100vh;
-    align-items: center;
-
-    background-image: url("background.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
+/* ---------------- STAR PARTICLES ---------------- */
+body::after{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle,#38bdf8 1px,transparent 1px);
+    background-size:70px 70px;
+    opacity:0.06;
+    animation:particlesMove 100s linear infinite;
+    pointer-events:none;
 }
 
-h1 {
-    font-size: 29px;
-    line-height: 39px;
-    font-weight: 300;
+@keyframes particlesMove{
+    0%{transform:translate(0,0);}
+    100%{transform:translate(-900px,-900px);}
 }
 
-.title {
-    margin-bottom: 40px;
+/* ---------------- LAYOUT ---------------- */
+.container{
+    display:flex;
+    height:90vh;
+    padding:30px;
+    gap:30px;
+    position:relative;
+    z-index:1; /* 在化学式前面显示 */
 }
 
-#app {
-    max-width: 1280px;
+/* ---------------- LEFT PANEL ---------------- */
+.left{
+    width:28%;
+    background:rgba(30,41,59,0.85);
+    padding:40px;
+    border-radius:18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.05);
 }
 
-.logo {
-    margin-top: 45px;
-    margin-left: 20%;
-    align-self: flex-start;
+/* ---------------- RIGHT PANEL ---------------- */
+.right{
+    width:72%;
+    background:rgba(15,23,42,0.9);
+    padding:25px;
+    border-radius:18px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    border:1px solid rgba(255,255,255,0.05);
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+/* ---------------- TITLES ---------------- */
+h1{ font-size:34px; color:#38bdf8; margin-bottom:20px; letter-spacing:1px; }
+.right h2{ margin-bottom:20px; color:#38bdf8; }
+
+/* ---------------- TEXT ---------------- */
+p{ opacity:0.9; margin-top:10px; font-size:15px; }
+
+/* ---------------- INPUT ---------------- */
+input{
+    width:100%; padding:14px; margin-top:15px;
+    border-radius:12px; border:none; outline:none;
+    font-size:16px; background:#020617; color: #ffffff; border:1px solid #334155;
+    transition:all 0.25s;
+}
+input:focus{
+    border:1px solid #38bdf8;
+    box-shadow: 0 0 10px #38bdf8, 0 0 25px rgba(56,189,248,0.6);
 }
 
-.counter {
-    font-family: "JetBrains Mono", Inter, system-ui, sans-serif;
-    font-weight: 400;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 60px;
-    color: rgba(255, 255, 255, 1);
+/* ---------------- BUTTON ---------------- */
+button{
+    margin-top:15px;
+    padding:13px; width:100%;
+    border:none; border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:white; font-size:16px; font-weight:600;
+    cursor:pointer; transition:all 0.25s;
+}
+button:hover{
+    transform:translateY(-3px);
+    box-shadow: 0 10px 25px rgba(56,189,248,0.6);
 }
 
-.counter-interaction {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 20px 0;
-    width: 470px;
-    justify-content: space-between;
+/* ---------------- EXAMPLE BUTTONS ---------------- */
+.examples{ margin-top:30px; }
+.examples button{
+    width:auto; padding:8px 15px; margin:6px;
+    font-size:14px; background:#1e293b; border:1px solid #334155;
+}
+.examples button:hover{ background:#38bdf8; }
+
+/* ---------------- STATUS ---------------- */
+.status{ margin-top:25px; font-weight:500; color:#94a3b8; }
+
+#viewer {
+    width:100%;
+    height:620px;
+    border-radius:14px;
+    border:2px solid #38bdf8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:#64748b;
+    position:relative;
+    overflow:hidden;
+    box-shadow:
+            0 0 20px #38bdf8,
+            0 0 60px rgba(56,189,248,0.6),
+            inset 0 0 25px rgba(56,189,248,0.2);
 }
 
-.counter-interaction button {
-    width: 48%;
-    height: 47%;
-    align-content: space-between;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 120px;
-    font-size: 68px;
-    text-align: center;
+/* 背景层 */
+.viewer-background {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+
+    /* 背景渐变 + 星云光斑 */
+    background:
+            radial-gradient(circle at 30% 30%, rgba(72,61,139,0.25), transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(123,104,238,0.15), transparent 45%),
+            linear-gradient(135deg,#0b0c1a,#1b1f3a,#0b0c1a);
 }
 
-.counter-interaction button:nth-child(2n+1) {
-    margin-right: 14px;
+/* 保留扫描线 */
+#viewer::after{
+    content:"";
+    position:absolute;
+    top:-100%; left:0;
+    width:100%; height:200%;
+    background:linear-gradient(transparent, rgba(56,189,248,0.15), transparent);
+    animation:scan 6s linear infinite;
+    pointer-events:none;
+    z-index:1;
 }
 
-.counter-interaction button:disabled {
-    color: rgba(255, 255, 255, 0.5);
-    background-image: none;
-    border-color: inherit;
+/* 发光动画 */
+@keyframes viewerGlow{
+    0%{ box-shadow:0 0 20px #38bdf8, 0 0 60px rgba(56,189,248,0.6); }
+    50%{ box-shadow:0 0 35px #38bdf8, 0 0 90px rgba(56,189,248,1); }
+    100%{ box-shadow:0 0 20px #38bdf8, 0 0 60px rgba(56,189,248,0.6); }
 }
 
-.counter-info {
-    width: 360px;
-    height: 345px;
-    margin-right: 27px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    background-color: rgba(25, 25, 28, 0.5);
-    border-radius: 29px;
+@keyframes scan{
+    0%{top:-100%;}
+    100%{top:100%;}
 }
 
-.counter-text {
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 24px;
-    margin-top: 60px;
-    margin-bottom: 28px;
-
+/* ---------------- MOLECULE VIEWPORT ---------------- */
+#molecule-viewport{
+    margin:30px; border-radius:14px;
+    background:#020617; border:1px solid #334155;
+    min-height:90px; text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-.counter-value {
-    font-weight: 200;
-    font-size: 170px;
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-}
+/* ---------------- SCROLLBAR ---------------- */
+::-webkit-scrollbar{ width:8px; }
+::-webkit-scrollbar-track{ background:#020617; }
+::-webkit-scrollbar-thumb{ background:#38bdf8; border-radius:10px; }
 
-button {
-    font-family: "JetBrains Mono", Inter, system-ui, sans-serif;
-    background-color: rgba(25, 25, 28, 0.5);
-    cursor: pointer;
-    color: rgba(255, 255, 255, 1);
-}
-
-button:hover {
-    background-image: radial-gradient(
-            farthest-corner at 77% 83%,
-            rgba(1, 197, 245, 0.5) 2%,
-            rgba(1, 126, 254, 0.5) 28%,
-            rgba(25, 25, 28, 0) 70%
-    );
-    border: 1px solid rgba(76, 166, 255, 0.2);
-    background-clip: padding-box;
-}
-
-.technologies {
-    margin-bottom: 36px;
-    align-self: center;
-}
-
-.technologies img {
-    max-width: fit-content;
-}
-
-
-@media (max-width: 875px) {
-
-    .logo {
-        margin-top: 10px;
-    }
-
-    .title {
-        margin-bottom: 30px;
-    }
-
-    .counter {
-        flex-direction: column;
-        padding: 0;
-        margin-bottom: 0;
-    }
-
-    .counter-info {
-        width: 100%;
-        height: 300px;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-
-    .counter-interaction {
-        display: flex;
-        flex-direction: row;
-        height: auto;
-        width: auto;
-    }
-
-    .counter-interaction button {
-        width: 47%;
-        height: 100px;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width:900px){
+    .container{ flex-direction:column; height:auto; }
+    .left{ width:100%; }
+    .right{ width:100%; }
+    #viewer{ height:500px; }
 }
