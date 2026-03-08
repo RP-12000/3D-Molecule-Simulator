@@ -1,40 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/webstorm-icon-logo.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>3D Molecule Simulator</title>
-  <link rel="stylesheet" href="/style.css">
+  <!-- JSmol 源文件在线目录 -->
+  <script type="text/javascript" src="https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js"></script>
+  <!-- 本地Javascript源文件 -->
+  <script src="src/main.js"></script>
+  <!-- CSS样式 -->
+  <link rel="stylesheet" href="./public/style.css">
 </head>
+
 <body>
-<header class="logo">
-  <a href="https://www.jetbrains.com/webstorm/">
-    <img src="/webstorm-logo.svg" alt="WebStorm logo" width="344"
-         height="90">
-  </a>
-</header>
-<main id="app">
-  <h1 class="title">
-    Kelvin. <br /> Your first project is up and running
-    now.
-  </h1>
-  <section class="counter">
-    <div class="counter-info">
-      <p class="counter-text">Counter is</p>
-      <p class="counter-value" id="counter-value"></p>
-    </div>
-    <div class="counter-interaction">
-      <button id="increaseByOne" type="button">+1</button>
-      <button id="increaseByTwo" type="button">+2</button>
-      <button id="decreaseByOne" type="button">-1</button>
-      <button id="decreaseByTwo" type="button">-2</button>
-    </div>
-  </section>
-</main>
-<footer class="technologies">
-  <img src="/technologies.svg" alt="List of supported technologies">
-</footer>
-<script type="module" src="/src/main.js"></script>
+
+<div class="container">
+
+  <div class="left">
+    <h1>Chemical Structure Generator</h1>
+
+    <p>Enter a chemical formula:</p>
+
+    <label>
+      <input type="text" placeholder="Example: H2O">
+    </label>
+    <button>Generate</button>
+
+    <p style="margin-top:40px;color:#666">
+      (Current demo shows a static 3D molecule.)
+    </p>
+  </div>
+
+  <div class="right" id="viewer"></div>
+
+</div>
+<div id="molecule-viewport">
+  <p style="padding: 20px;">loading molecules...</p >
+</div>
+
 </body>
 </html>
