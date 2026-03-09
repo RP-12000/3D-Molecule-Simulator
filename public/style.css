@@ -1,42 +1,212 @@
-body{
+/* ---------------- RESET ---------------- */
+*{
     margin:0;
-    font-family:Arial, Helvetica, sans-serif;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
 }
 
+/* ---------------- BODY ---------------- */
+body{
+    min-height:100vh;
+    background:
+            radial-gradient(circle at 10% 20%, rgba(56,189,248,0.25), transparent 35%),
+            radial-gradient(circle at 80% 70%, rgba(14,165,233,0.25), transparent 40%),
+            linear-gradient(140deg,#020617,#0f172a,#020617);
+    color:#e5e7eb;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+    position:relative;
+}
+
+/* ---------------- FLOATING CHEMISTRY FORMULAS ---------------- */
+.floating-molecule {
+    position:fixed;
+    font-size:50px;
+    font-weight:bold;
+    color: rgba(255,255,255,0.15);
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+    white-space:nowrap;
+    text-shadow: 0 0 5px rgba(255,255,255,0.4);
+}
+
+/* ---------------- STAR PARTICLES ---------------- */
+body::after{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle,#38bdf8 1px,transparent 1px);
+    background-size:70px 70px;
+    opacity:0.06;
+    animation:particlesMove 100s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes particlesMove{
+    0%{transform:translate(0,0);}
+    100%{transform:translate(-900px,-900px);}
+}
+
+/* ---------------- LAYOUT ---------------- */
 .container{
     display:flex;
-    height:100vh;
+    height:90vh;
+    padding:30px;
+    gap:30px;
+    position:relative;
+    z-index:1; /* 在化学式前面显示 */
 }
 
+/* ---------------- LEFT PANEL ---------------- */
 .left{
-    width:50%;
+    width:28%;
+    background:rgba(30,41,59,0.85);
     padding:40px;
-    background:#f5f5f5;
+    border-radius:18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.05);
 }
 
+/* ---------------- RIGHT PANEL ---------------- */
 .right{
-    width:50%;
-    background:black;
+    width:72%;
+    background:rgba(15,23,42,0.9);
+    padding:25px;
+    border-radius:18px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    border:1px solid rgba(255,255,255,0.05);
 }
 
+/* ---------------- TITLES ---------------- */
+h1{ font-size:34px; color:#38bdf8; margin-bottom:20px; letter-spacing:1px; }
+.right h2{ margin-bottom:20px; color:#38bdf8; }
+
+/* ---------------- TEXT ---------------- */
+p{ opacity:0.9; margin-top:10px; font-size:15px; }
+
+/* ---------------- INPUT ---------------- */
 input{
-    width:80%;
-    padding:10px;
-    font-size:18px;
+    width:100%; padding:14px; margin-top:15px;
+    border-radius:12px; border:none; outline:none;
+    font-size:16px; background:#020617; color: #ffffff; border:1px solid #334155;
+    transition:all 0.25s;
+}
+input:focus{
+    border:1px solid #38bdf8;
+    box-shadow: 0 0 10px #38bdf8, 0 0 25px rgba(56,189,248,0.6);
 }
 
+/* ---------------- BUTTON ---------------- */
 button{
-    padding:10px 20px;
+    margin-top:15px;
+    padding:13px; width:100%;
+    border:none; border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:white; font-size:16px; font-weight:600;
+    cursor:pointer; transition:all 0.25s;
+}
+button:hover{
+    transform:translateY(-3px);
+    box-shadow: 0 10px 25px rgba(56,189,248,0.6);
+}
+
+/* ---------------- EXAMPLE BUTTONS ---------------- */
+.examples{ margin-top:30px; }
+.examples button{
+    width:auto; padding:8px 15px; margin:6px;
+    font-size:14px; background:#1e293b; border:1px solid #334155;
+}
+.examples button:hover{ background:#38bdf8; }
+
+/* ---------------- STATUS ---------------- */
+.status{ margin-top:25px; font-weight:500; color:#94a3b8; }
+
+#viewer {
+    width:100%;
+    height:620px;
+    border-radius:14px;
+    border:2px solid #38bdf8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-size:18px;
-    margin-left:10px;
+    color:#64748b;
+    position:relative;
+    overflow:hidden;
+    box-shadow:
+            0 0 20px #38bdf8,
+            0 0 60px rgba(56,189,248,0.6),
+            inset 0 0 25px rgba(56,189,248,0.2);
 }
 
-.note{
-    margin-top:40px;
-    color:#666;
+/* 背景层 */
+.viewer-background {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+
+    /* 背景渐变 + 星云光斑 */
+    background:
+            radial-gradient(circle at 30% 30%, rgba(72,61,139,0.25), transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(123,104,238,0.15), transparent 45%),
+            linear-gradient(135deg,#0b0c1a,#1b1f3a,#0b0c1a);
 }
 
+/* 保留扫描线 */
+#viewer::after{
+    content:"";
+    position:absolute;
+    top:-100%; left:0;
+    width:100%; height:200%;
+    background:linear-gradient(transparent, rgba(56,189,248,0.15), transparent);
+    animation:scan 6s linear infinite;
+    pointer-events:none;
+    z-index:1;
+}
+
+/* 发光动画 */
+@keyframes viewerGlow{
+    0%{ box-shadow:0 0 20px #38bdf8, 0 0 60px rgba(56,189,248,0.6); }
+    50%{ box-shadow:0 0 35px #38bdf8, 0 0 90px rgba(56,189,248,1); }
+    100%{ box-shadow:0 0 20px #38bdf8, 0 0 60px rgba(56,189,248,0.6); }
+}
+
+@keyframes scan{
+    0%{top:-100%;}
+    100%{top:100%;}
+}
+
+/* ---------------- MOLECULE VIEWPORT ---------------- */
 #molecule-viewport{
-    border:1px solid #ccc;
-    background-color:#f9f9f9;
+    margin:30px; border-radius:14px;
+    background:#020617; border:1px solid #334155;
+    min-height:90px; text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* ---------------- SCROLLBAR ---------------- */
+::-webkit-scrollbar{ width:8px; }
+::-webkit-scrollbar-track{ background:#020617; }
+::-webkit-scrollbar-thumb{ background:#38bdf8; border-radius:10px; }
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width:900px){
+    .container{ flex-direction:column; height:auto; }
+    .left{ width:100%; }
+    .right{ width:100%; }
+    #viewer{ height:500px; }
 }
