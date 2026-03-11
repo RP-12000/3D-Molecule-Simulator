@@ -1,35 +1,39 @@
-<!-- TODO: JSMol放缩手势方向反了需要调整-->
-<!-- TODO: JSMol显示界面出现bug-->
-<!-- TODO：SMILES是纯2D文件，需要添加3D坐标才能在JSmol中正确渲染。可以使用OCL的add3DCoordinates方法来生成3D坐标？问题在molecule.js第19行-->
+<!-- TODO: 显示区域放大缩小手势是反的-->
+<!-- TODO: 美化球棍模型参数（位于molecule.js）-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>3D Molecule Simulator</title>
-  <!-- JSmol 源文件在线目录。这里尝试把它迁移到了本地，如果大家电脑编译没有问题可以考虑删掉在线引用 -->
-  <!-- <script src="https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min"></script> -->
+
+  <!-- 本地JSmol -->
   <script src="src/jsmol.js"></script>
-  <!-- CSS样式 -->
+
+  <!-- 样式表 -->
   <link rel="stylesheet" href="./public/style.css">
 </head>
 
 <body>
 <div class="container">
-
-  <!-- LEFT PANEL -->
   <div class="left">
     <h1>Chemical Structure Generator</h1>
-    <p>Enter a chemical formula:</p>
-    <label for="moleculeInput"></label><input id="moleculeInput" type="text" placeholder="Enter SMILES e.g. O or O=C=O" />
+    <p>Enter a SMILES string:</p>
+
+    <label for="moleculeInput"></label><input
+            id="moleculeInput"
+            type="text"
+            placeholder="Enter SMILES e.g. O, O=C=O, CCO"
+    />
 
     <button id="generateBtn">Generate</button>
 
     <div class="examples">
       <p>Try examples:</p>
-      <button class="example-btn">H2O</button>
-      <button class="example-btn">CO2</button>
-      <button class="example-btn">CH4</button>
-      <button class="example-btn">NH3</button>
+      <!-- ⚠️ 这里必须是 SMILES，而不是化学式 -->
+      <button class="example-btn">O</button>
+      <button class="example-btn">O=C=O</button>
+      <button class="example-btn">C</button>
+      <button class="example-btn">N</button>
     </div>
 
     <div class="status">
@@ -44,11 +48,12 @@
       <div id="viewer-canvas"></div>
     </div>
   </div>
-
-  <!-- 本地Javascript源文件 -->
-  <script type="module" src="src/main.js"></script>
-  <!-- 背景动画脚本 -->
-  <script src="src/background.js"></script>
 </div>
+
+<!-- ✅ 主模块：调用后端 /generate -->
+<script type="module" src="src/main.js"></script>
+
+<!-- 背景动画 -->
+<script src="src/background.js"></script>
 </body>
 </html>
