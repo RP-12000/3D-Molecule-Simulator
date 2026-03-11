@@ -18,7 +18,7 @@ export async function generateMolecule() {
 
   const viewerCanvas = document.getElementById('viewer-canvas');
   if (viewerCanvas) {
-    viewerCanvas.innerHTML = '<p>正在生成分子，请稍候...</p>';
+    viewerCanvas.innerHTML = '<p>正在生成分子，请稍候...</p>'; //TODO: 美化界面
   }
 
   try {
@@ -26,11 +26,42 @@ export async function generateMolecule() {
     console.log(`分子 ${formula} 渲染完成`);
   } catch (e) {
     console.error(e);
-    if (viewerCanvas) {
-      viewerCanvas.innerHTML =
-        "<p style='color:red'>分子生成失败，请查看控制台</p>";
+
+    let message = '生成失败';
+
+    // 尝试解析后端返回的 JSON 错误
+    if (e instanceof Error) {
+      try {
+        const json = JSON.parse(e.message);
+        if (json?.detail) {
+          // 格式化 detail 信息
+          message = `SMILES 不合法或解析失败:\n${json.detail}`;
+        } else {
+          message = e.message;
+        }
+      } catch {
+        // 如果解析失败，直接使用 e.message
+        message = e.message;
+      }
+    } else if (typeof e === 'string') {
+      message = e;
     }
-    alert('分子生成失败，请检查 SMILES 是否正确或查看控制台错误。');
+
+    // 弹窗显示整理后的信息
+    alert(message);
+
+    // 更新 viewer 状态
+    if (viewerCanvas) {
+      viewerCanvas.innerHTML = `
+        <div style="color:red">
+          生成失败
+        </div>
+      `;
+    }
+
+    if (moleculeName) {
+      moleculeName.innerText = 'No molecule loaded';
+    }
   }
 }
 
