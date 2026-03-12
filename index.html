@@ -1,11 +1,19 @@
-<!-- TODO: 显示区域放大缩小手势是反的-->
+<!--
+TODO:
+1. examples 按钮被吞了，显示不出来
+2. jsmol方向手势还是反的
+3. 美化SMILES/Formula切换界面
+4. 动态生成目前进行到哪一个iteration了
+5. 其他种类的算法？更合理的结构？
+6. 增加一些功能？
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>3D Molecule Simulator</title>
 
-  <!-- 本地JSmol -->
+  <!-- 本地 JSmol -->
   <script src="src/jsmol.js"></script>
 
   <!-- 样式表 -->
@@ -16,27 +24,32 @@
 <div class="container">
   <div class="left">
     <h1>Chemical Structure Generator</h1>
-    <p>Enter a SMILES string:</p>
 
+    <!-- 输入类型选择 -->
+    <label for="inputType">Input Type:</label>
+    <select id="inputType">
+      <option value="smiles" selected>SMILES</option>
+      <option value="formula">Formula</option>
+    </select>
+
+    <p id="inputLabel">Enter SMILES string:</p>
     <label for="moleculeInput"></label><input
-            id="moleculeInput"
-            type="text"
-            placeholder="Enter SMILES e.g. O, O=C=O, CCO"
+      id="moleculeInput"
+      type="text"
+      placeholder="Enter SMILES e.g. O, O=C=O, CCO"
     />
 
     <button id="generateBtn">Generate</button>
 
     <div class="examples">
       <p>Try examples:</p>
-      <!-- ⚠️ 这里必须是 SMILES，而不是化学式 -->
-      <button class="example-btn">O</button>
-      <button class="example-btn">O=C=O</button>
-      <button class="example-btn">C</button>
-      <button class="example-btn">N</button>
+      <div id="exampleButtons"></div>
     </div>
 
     <div class="status">
-      <p id="moleculeName">No molecule loaded</p>
+      <p id="moleculeName">Formula: </p>
+      <p id="moleculeSmiles">SMILES: </p>
+      <p id="Iterations">Iterations: </p>
     </div>
   </div>
 
@@ -49,8 +62,8 @@
   </div>
 </div>
 
-<!-- ✅ 主模块：调用后端 /generate -->
-<script type="module" src="src/main.js"></script>
+<!-- ✅ 只加载 main.js，不在 HTML 写任何业务逻辑 -->
+<script type="module" src="/src/main.js"></script>
 
 <!-- 背景动画 -->
 <script src="src/background.js"></script>

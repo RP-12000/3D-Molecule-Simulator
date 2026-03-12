@@ -1,104 +1,83 @@
-import { renderFromSMILES } from './molecule.js';
+import { fetchGenerate, renderSDF } from './molecule.js';
 
-/**
- * 生成分子并渲染
- */
+// --------------------------------------------------
+// 主生成函数
+// --------------------------------------------------
 export async function generateMolecule() {
-  const formulaInput = document.getElementById('moleculeInput');
-  const formula = formulaInput?.value.trim();
-  if (!formula) {
-    alert('请输入 SMILES 字符串');
+  const inputEl = document.getElementById('moleculeInput');
+  const typeEl = document.getElementById('inputType');
+
+  const formulaEl = document.getElementById('moleculeName');
+  const smilesEl = document.getElementById('moleculeSmiles');
+  const iterEl = document.getElementById('Iterations');
+
+  const input = inputEl?.value.trim();
+  if (!input) {
+    alert('请输入 SMILES 或化学式');
     return;
   }
 
-  const moleculeName = document.getElementById('moleculeName');
-  if (moleculeName) {
-    moleculeName.innerText = 'Current Molecule: ' + formula;
-  }
+  const type = typeEl?.value || 'smiles';
 
-  const viewerCanvas = document.getElementById('viewer-canvas');
-  if (viewerCanvas) {
-    viewerCanvas.innerHTML = '<p>正在生成分子，请稍候...</p>'; //TODO: 美化界面
-  }
+  // ---------- UI：生成中 ----------
+  if (formulaEl) formulaEl.innerText = 'Formula: generating...';
+  if (smilesEl) smilesEl.innerText = 'SMILES: generating...';
+  if (iterEl) iterEl.innerText = '';
+  const container = document.getElementById('viewer-canvas');
 
   try {
-    await renderFromSMILES(formula, 'viewer-canvas');
-    console.log(`分子 ${formula} 渲染完成`);
+    // 调用 molecule.js（内部已 fetch + render）
+    container.innerHTML = '<p>正在生成分子，请稍候...</p>';
+    const data = await fetchGenerate(input, type);
+    renderSDF(data.sdf, 'viewer-canvas');
+
+    // ---------- UI：生成成功 ----------
+    if (formulaEl) formulaEl.innerText = `Formula: ${data.formula}`;
+    if (smilesEl) smilesEl.innerText = `SMILES: ${data.smiles}`;
+    if (iterEl) iterEl.innerText = `Iterations: ${data.iter}`;
+
+    console.log('分子生成成功:', data);
   } catch (e) {
+    // molecule.js 已经负责 alert，这里只负责 UI
     console.error(e);
-
-    let message = '生成失败';
-
-    // 尝试解析后端返回的 JSON 错误
-    if (e instanceof Error) {
-      try {
-        const json = JSON.parse(e.message);
-        if (json?.detail) {
-          // 格式化 detail 信息
-          message = `SMILES 不合法或解析失败:\n${json.detail}`;
-        } else {
-          message = e.message;
-        }
-      } catch {
-        // 如果解析失败，直接使用 e.message
-        message = e.message;
-      }
-    } else if (typeof e === 'string') {
-      message = e;
-    }
-
-    // 弹窗显示整理后的信息
-    alert(message);
-
-    // 更新 viewer 状态
-    if (viewerCanvas) {
-      viewerCanvas.innerHTML = `
-        <div style="color:red">
-          生成失败
-        </div>
-      `;
-    }
-
-    if (moleculeName) {
-      moleculeName.innerText = 'No molecule loaded';
-    }
+    if (formulaEl) formulaEl.innerText = 'No molecule loaded';
+    if (smilesEl) smilesEl.innerText = '';
+    if (iterEl) iterEl.innerText = '';
+    container.innerHTML = '<p>生成失败，请重新输入...</p>';
   }
 }
 
-/**
- * 加载示例 SMILES 并渲染
- * @param {string} smiles
- */
-function loadExample(smiles) {
-  const formulaInput = document.getElementById('moleculeInput');
-  if (formulaInput) {
-    formulaInput.value = smiles;
-  }
-  generateMolecule().then(() => {}); // 触发渲染
+// --------------------------------------------------
+// 加载示例
+// --------------------------------------------------
+function loadExample(exampleValue, type = 'smiles') {
+  const inputEl = document.getElementById('moleculeInput');
+  const typeEl = document.getElementById('inputType');
+
+  if (inputEl) inputEl.value = exampleValue;
+  if (typeEl) typeEl.value = type;
+
+  generateMolecule().then(() => {});
 }
 
-/**
- * 页面初始化事件绑定
- */
+// --------------------------------------------------
+// 页面初始化
+// --------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
-  // 生成按钮
   const generateBtn = document.getElementById('generateBtn');
-  if (generateBtn) {
-    generateBtn.addEventListener('click', generateMolecule);
-  }
+  if (generateBtn) generateBtn.addEventListener('click', generateMolecule);
 
-  // 示例按钮
   document.querySelectorAll('.examples button').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const smiles = btn.innerText.trim();
-      if (smiles) loadExample(smiles);
+      const val = btn.getAttribute('data-value');
+      const type = btn.getAttribute('data-type') || 'smiles';
+      loadExample(val, type);
     });
   });
 
-  // 可选：按 Enter 键也触发生成
-  const formulaInput = document.getElementById('moleculeInput');
-  if (formulaInput) {
-    formulaInput.addEventListener('keypress', (e) => {
+  const inputEl = document.getElementById('moleculeInput');
+  if (inputEl) {
+    inputEl.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') generateMolecule().then(() => {});
     });
   }
