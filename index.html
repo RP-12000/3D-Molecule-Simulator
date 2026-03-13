@@ -1,11 +1,8 @@
 <!--
-TODO:
-1. examples 按钮被吞了，显示不出来
+TODO: 1. 写一个判断分子总键数如果为奇数则无法生成结构的代码，如CH就不可能，CH3也不可能
 2. jsmol方向手势还是反的
-3. 美化SMILES/Formula切换界面
-4. 动态生成目前进行到哪一个iteration了
-5. 其他种类的算法？更合理的结构？
-6. 增加一些功能？
+3. 其他种类的算法？更合理的结构？
+4. 增加一些功能？
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -22,18 +19,18 @@ TODO:
 
 <body>
 <div class="container">
+  <!-- 左侧控制面板 -->
   <div class="left">
     <h1>Chemical Structure Generator</h1>
 
     <!-- 输入类型选择 -->
     <p id="inputType">Input type:</p>
-
     <div class="input-switch">
       <button id="SMILES">SMILES</button>
       <button id="Random">RandomChem</button>
     </div>
 
-
+    <!-- 输入框 -->
     <p id="inputLabel">Enter SMILES string:</p>
     <label for="moleculeInput"></label><input
       id="moleculeInput"
@@ -41,20 +38,27 @@ TODO:
       placeholder="Enter SMILES e.g. O, O=C=O, CCO"
     />
 
+    <label for="totalTrials">Total trials:</label>
+    <input type="number" id="totalTrials" value="1000000" />
+
     <button id="generateBtn">Generate</button>
 
+    <!-- 示例按钮 -->
     <div class="examples">
       <p>Try examples:</p>
       <div id="exampleButtons"></div>
     </div>
 
+    <!-- 状态显示 -->
     <div class="status">
       <p id="moleculeName">Formula: </p>
       <p id="moleculeSmiles">SMILES: </p>
       <p id="Iterations">Iterations: </p>
+      <progress id="iterationProgress" value="0" max="100"></progress>
     </div>
   </div>
 
+  <!-- 右侧 3D 渲染面板 -->
   <div class="right">
     <h2>3D Molecule Viewer</h2>
     <div id="viewer">
@@ -64,7 +68,7 @@ TODO:
   </div>
 </div>
 
-<!-- ✅ 只加载 main.js，不在 HTML 写任何业务逻辑 -->
+<!-- 业务逻辑 -->
 <script type="module" src="/src/main.js"></script>
 
 <!-- 背景动画 -->

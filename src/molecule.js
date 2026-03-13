@@ -60,3 +60,9 @@ export function renderSDF(sdf, containerId) {
     `,
   });
 }
+
+export async function fetchProgress() {
+  const res = await fetch("http://127.0.0.1:8000/progress");
+  if (!res.ok) return null;
+  return await res.json();
+}
