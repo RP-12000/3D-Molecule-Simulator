@@ -26,11 +26,13 @@ TODO:
     <h1>Chemical Structure Generator</h1>
 
     <!-- 输入类型选择 -->
-    <label for="inputType">Input Type:</label>
-    <select id="inputType">
-      <option value="smiles" selected>SMILES</option>
-      <option value="formula">Formula</option>
-    </select>
+    <p id="inputType">Input type:</p>
+
+    <div class="input-switch">
+      <button id="SMILES">SMILES</button>
+      <button id="Random">RandomChem</button>
+    </div>
+
 
     <p id="inputLabel">Enter SMILES string:</p>
     <label for="moleculeInput"></label><input

@@ -111,11 +111,16 @@ input:focus{
 /* ---------------- BUTTON ---------------- */
 button{
     margin-top:15px;
-    padding:13px; width:100%;
-    border:none; border-radius:12px;
+    padding:13px;
+    width:100%;
+    border:none;
+    border-radius:12px;
     background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-    color:white; font-size:16px; font-weight:600;
-    cursor:pointer; transition:all 0.25s;
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.25s;
 }
 button:hover{
     transform:translateY(-3px);
@@ -201,4 +206,36 @@ button:hover{
     .left{ width:100%; }
     .right{ width:100%; }
     #viewer{ height:500px; }
+}
+
+/*------------状态选择的几个小button------------*/
+/* button选择状态 */
+button.active{
+    background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:white;
+    box-shadow:0 0 15px rgba(56,189,248,0.8);
+}
+
+/* 未选中 */
+button.inactive{
+    background:#1e293b;
+    border:1px solid #334155;
+}
+
+
+#inputType{
+    margin-top:10px;
+}
+
+#SMILES{
+    margin-right:4%;
+}
+
+.input-switch{
+    display:flex;
+    gap:10px;
+}
+
+.input-switch button{
+    width:50%;
 }

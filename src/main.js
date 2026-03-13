@@ -1,5 +1,5 @@
 import { fetchGenerate, renderSDF } from './molecule.js';
-
+let mode = "smiles";
 // --------------------------------------------------
 // 主生成函数
 // --------------------------------------------------
@@ -11,13 +11,15 @@ export async function generateMolecule() {
   const smilesEl = document.getElementById('moleculeSmiles');
   const iterEl = document.getElementById('Iterations');
 
+
+
   const input = inputEl?.value.trim();
   if (!input) {
     alert('请输入 SMILES 或化学式');
     return;
   }
 
-  const type = typeEl?.value || 'smiles';
+  const type = mode;
 
   // ---------- UI：生成中 ----------
   if (formulaEl) formulaEl.innerText = 'Formula: generating...';
@@ -64,8 +66,39 @@ function loadExample(exampleValue, type = 'smiles') {
 // 页面初始化
 // --------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
+//增加两个选输入格式的按钮
+  const smilesBtn = document.getElementById("SMILES");
+  const randomBtn = document.getElementById("Random");
+
+  function setMode(newMode){
+    mode = newMode;
+
+    if(newMode === "smiles"){
+      smilesBtn.classList.add("active");
+      randomBtn.classList.remove("active");
+    } else {
+      randomBtn.classList.add("active");
+      smilesBtn.classList.remove("active");
+    }
+    const inputEl = document.getElementById('moleculeInput');
+
+    if(newMode === "smiles"){
+      inputEl.placeholder = "Enter SMILES e.g. CCO";
+    } else {
+      inputEl.placeholder = "Enter formula e.g. C2H6O";
+    }
+
+  }
+
+  smilesBtn.addEventListener("click", () => setMode("smiles"));
+  randomBtn.addEventListener("click", () => setMode("formula"));
+
+// 默认
+  setMode("smiles");
+
   const generateBtn = document.getElementById('generateBtn');
   if (generateBtn) generateBtn.addEventListener('click', generateMolecule);
+
 
   document.querySelectorAll('.examples button').forEach((btn) => {
     btn.addEventListener('click', () => {
