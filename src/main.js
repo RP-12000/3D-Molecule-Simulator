@@ -8,7 +8,6 @@ let progressTimer = null;
 // --------------------------------------------------
 export async function generateMolecule() {
   const inputEl = document.getElementById('moleculeInput');
-
   const formulaEl = document.getElementById('moleculeName');
   const smilesEl = document.getElementById('moleculeSmiles');
   const iterEl = document.getElementById('Iterations');
@@ -22,7 +21,12 @@ export async function generateMolecule() {
   }
 
   const type = mode;
-  const totalTrials = parseInt(totalTrialsEl?.value) || 1000000;
+
+  // SMILES 模式下 trials 强制为 1
+  const totalTrials =
+    mode === 'smiles'
+      ? 1
+      : parseInt(totalTrialsEl?.value) || 1_000_000;
 
   // ---------- UI：生成中 ----------
   if (formulaEl) formulaEl.innerText = 'Formula: generating...';
@@ -33,8 +37,11 @@ export async function generateMolecule() {
     progressEl.max = totalTrials;
   }
 
-  const container = document.getElementById('viewer-canvas');
-  container.innerHTML = '<p>正在生成分子，请稍候...</p>';
+  // ❗ 不再 innerHTML 覆盖 viewer-canvas
+  const viewerCanvas = document.getElementById('viewer-canvas');
+  if (viewerCanvas) {
+    viewerCanvas.classList.add('loading');
+  }
 
   // ---------- 启动轮询进度 ----------
   if (progressTimer) clearInterval(progressTimer);
@@ -51,41 +58,38 @@ export async function generateMolecule() {
     }
   }, 50);
 
-  // ---------- 调用后端生成 ----------
+  // ---------- 调用后端 ----------
   try {
     const data = await fetchGenerate(input, type, totalTrials);
+
     renderSDF(data.sdf, 'viewer-canvas');
 
-    // ---------- UI：生成成功 ----------
     if (formulaEl) formulaEl.innerText = `Formula: ${data.formula}`;
     if (smilesEl) smilesEl.innerText = `SMILES: ${data.smiles}`;
-    if (iterEl) iterEl.innerText = `Iterations: ${data.trials}`;
-    if (progressEl) progressEl.value = progressEl.max;
+    if (iterEl) iterEl.innerText = `Iterations: ${data.iter}`;
 
-    console.log('分子生成成功:', data);
+    if (progressEl) progressEl.value = progressEl.max;
   } catch (e) {
     console.error(e);
     if (formulaEl) formulaEl.innerText = 'No molecule loaded';
     if (smilesEl) smilesEl.innerText = '';
     if (iterEl) iterEl.innerText = '';
     if (progressEl) progressEl.value = 0;
-    container.innerHTML = '<p>生成失败，请重新输入...</p>';
   } finally {
     clearInterval(progressTimer);
+    if (viewerCanvas) viewerCanvas.classList.remove('loading');
   }
 }
 
 // --------------------------------------------------
-// 加载示例
+// 示例加载
 // --------------------------------------------------
 function loadExample(exampleValue, type = 'smiles') {
   const inputEl = document.getElementById('moleculeInput');
-  const typeEl = document.getElementById('inputType');
-
   if (inputEl) inputEl.value = exampleValue;
-  if (typeEl) typeEl.value = type;
 
-  generateMolecule().then(() => {});
+  setMode(type);
+  generateMolecule();
 }
 
 // --------------------------------------------------
@@ -94,57 +98,66 @@ function loadExample(exampleValue, type = 'smiles') {
 window.addEventListener('DOMContentLoaded', () => {
   const smilesBtn = document.getElementById('SMILES');
   const randomBtn = document.getElementById('Random');
+  const inputEl = document.getElementById('moleculeInput');
 
-  function setMode(newMode) {
+  window.setMode = function setMode(newMode) {
     mode = newMode;
 
-    if (newMode === 'smiles') {
-      smilesBtn.classList.add('active');
-      randomBtn.classList.remove('active');
-    } else {
-      randomBtn.classList.add('active');
-      smilesBtn.classList.remove('active');
-    }
+    smilesBtn.classList.toggle('active', newMode === 'smiles');
+    randomBtn.classList.toggle('active', newMode === 'formula');
 
     const inputEl = document.getElementById('moleculeInput');
+    const trialsEl = document.getElementById('totalTrials');
+
+    const smilesExamples = document.getElementById('examples-smiles');
+    const formulaExamples = document.getElementById('examples-formula');
+
     if (newMode === 'smiles') {
       inputEl.placeholder = 'Enter SMILES e.g. CCO';
+
+      trialsEl.disabled = true;
+      trialsEl.classList.add('disabled');
+
+      // ✅ 只显示 SMILES 示例
+      smilesExamples.style.display = 'flex';
+      formulaExamples.style.display = 'none';
     } else {
       inputEl.placeholder = 'Enter formula e.g. C2H6O';
+
+      trialsEl.disabled = false;
+      trialsEl.classList.remove('disabled');
+
+      // ✅ 只显示 化学式 示例
+      smilesExamples.style.display = 'none';
+      formulaExamples.style.display = 'flex';
     }
-  }
+  };
 
   smilesBtn.addEventListener('click', () => setMode('smiles'));
   randomBtn.addEventListener('click', () => setMode('formula'));
 
-  // 默认 SMILES
   setMode('smiles');
 
   const generateBtn = document.getElementById('generateBtn');
-  if (generateBtn) generateBtn.addEventListener('click', generateMolecule);
+  generateBtn.addEventListener('click', generateMolecule);
 
-  // 示例按钮
   document.querySelectorAll('.examples button').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const val = btn.getAttribute('data-value');
-      const type = btn.getAttribute('data-type') || 'smiles';
-      loadExample(val, type);
+      loadExample(
+        btn.getAttribute('data-value'),
+        btn.getAttribute('data-type') || 'smiles'
+      );
     });
   });
 
-  const inputEl = document.getElementById('moleculeInput');
-  if (inputEl) {
-    inputEl.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') generateMolecule().then(() => {});
-    });
-  }
+  inputEl.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') generateMolecule();
+  });
 });
 
-// 页面刷新时请求停止后端
+// 页面刷新时停止后端
 window.addEventListener('beforeunload', async () => {
   try {
     await fetch('http://127.0.0.1:8000/stop', { method: 'POST' });
-  } catch (err) {
-    console.warn('Stop request failed', err);
-  }
+  } catch {}
 });

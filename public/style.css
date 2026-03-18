@@ -219,3 +219,35 @@ button.inactive{
 #SMILES{ margin-right:4%; }
 .input-switch{ display:flex; gap:10px; }
 .input-switch button{ width:50%; }
+
+input.disabled {
+    background-color: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.example-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap; /* 屏幕窄时自动换行 */
+}
+
+.example-row button {
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;   /* 垂直居中 */
+    gap: 8px;              /* 图标和文字之间的间距 */
+    font-size: 2em;        /* 可以根据需要调整文字大小 */
+}
+
+.title-icon {
+    width: 32px;           /* 图标宽度 */
+    height: 32px;          /* 图标高度 */
+}
