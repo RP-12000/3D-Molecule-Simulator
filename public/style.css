@@ -217,8 +217,24 @@ button.inactive{
 
 #inputType{ margin-top:10px; }
 #SMILES{ margin-right:4%; }
-.input-switch{ display:flex; gap:10px; }
-.input-switch button{ width:50%; }
+/* 调整按钮容器，让三个按钮平分空间 */
+/* 强制覆盖之前的布局设置 */
+.input-switch {
+    display: flex !important;
+    gap: 10px !important; /* 按钮之间的间距 */
+    width: 100% !important;
+    margin-top: 15px !important;
+}
+
+.input-switch button {
+    flex: 1 !important;    /* 核心：让所有按钮平分剩余空间，比例 1:1:1 */
+    width: 0 !important;    /* 配合 flex: 1 使用，确保平分 */
+    margin: 0 !important;   /* 清除可能存在的右边距 */
+    padding: 10px 5px !important; /* 稍微减小内边距，防止文字太挤 */
+    font-size: 13px !important;   /* 稍微调小字号 */
+    white-space: nowrap !important; /* 禁止文字换行 */
+    min-width: 0 !important;
+}
 
 input.disabled {
     background-color: #eee;
