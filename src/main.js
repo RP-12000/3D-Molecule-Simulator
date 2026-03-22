@@ -264,7 +264,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       // ---------- 空输入提示 ----------
       if (!moleculeInput) {
-        alert('请输入 SMILES、化学式或分子名称');
+        alert('Please enter SMILES、chemical formulas or English names.');
         return;
       }
 
