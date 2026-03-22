@@ -257,13 +257,92 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 点击 ? 弹出 AI 简介，不影响生成分子
     // 点击 ? 弹出 AI 简介，并判断分子是否存在，不影响生成分子
+    // 点击 ? 显示漂亮假弹窗，不阻塞生成分子
+    // 点击 ? 显示漂亮假弹窗，不阻塞生成分子
     helpBtn.addEventListener('click', async () => {
       const moleculeInput = inputEl.value.trim();
+
+      // ---------- 空输入提示 ----------
       if (!moleculeInput) {
         alert('请输入 SMILES、化学式或分子名称');
         return;
       }
 
+      // ---------- 创建或显示背景遮罩 ----------
+      let overlay = document.getElementById('fake-popup-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'fake-popup-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.4)';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.zIndex = '9998';
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.3s';
+        document.body.appendChild(overlay);
+      }
+
+      // ---------- 创建弹窗 ----------
+      let fakePopup = document.getElementById('fake-popup');
+      if (!fakePopup) {
+        fakePopup = document.createElement('div');
+        fakePopup.id = 'fake-popup';
+        fakePopup.style.backgroundColor = '#fff';
+        fakePopup.style.borderRadius = '10px';
+        fakePopup.style.padding = '20px';
+        fakePopup.style.width = '320px';
+        fakePopup.style.maxWidth = '90%';
+        fakePopup.style.boxShadow = '0 8px 20px rgba(0,0,0,0.3)';
+        fakePopup.style.fontSize = '14px';
+        fakePopup.style.color = '#333';
+        fakePopup.style.position = 'relative';
+        fakePopup.style.transform = 'translateY(-20px)';
+        fakePopup.style.transition = 'transform 0.3s, opacity 0.3s';
+        fakePopup.style.opacity = '0';
+
+        const title = document.createElement('div');
+        title.innerText = 'AI says';
+        title.style.fontWeight = 'bold';
+        title.style.marginBottom = '10px';
+        fakePopup.appendChild(title);
+
+        const content = document.createElement('div');
+        content.id = 'fake-popup-content';
+        content.innerText = 'Loading...';
+        fakePopup.appendChild(content);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.innerText = 'Close';
+        closeBtn.style.marginTop = '15px';
+        closeBtn.style.padding = '5px 10px';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '5px';
+        closeBtn.style.backgroundColor = '#fbbf24';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.addEventListener('click', () => {
+          fakePopup.style.opacity = '0';
+          fakePopup.style.transform = 'translateY(-20px)';
+          overlay.style.opacity = '0';
+          setTimeout(() => (overlay.style.display = 'none'), 300);
+        });
+        fakePopup.appendChild(closeBtn);
+
+        overlay.appendChild(fakePopup);
+      }
+
+      // ---------- 显示弹窗 ----------
+      overlay.style.display = 'flex';
+      setTimeout(() => (overlay.style.opacity = '1'), 10);
+      fakePopup.style.opacity = '1';
+      fakePopup.style.transform = 'translateY(0)';
+
+      // ---------- 调用 DeepSeek AI 获取分子简介 ----------
       try {
         const API_KEY = 'sk-ebefa89a1fb34be796de1822741b0d97';
         const API_URL = 'https://api.deepseek.com/chat/completions';
@@ -298,17 +377,13 @@ Keep it concise.
           }),
         });
 
-        if (!response.ok) {
-          alert('AI 请求失败，请检查网络或 API Key');
-          return;
-        }
-
         const data = await response.json();
         const summary = data.choices[0].message.content.trim();
-        alert(`AI says:\n\n${summary}`);
+        document.getElementById('fake-popup-content').innerText = summary;
       } catch (error) {
         console.error(error);
-        alert('获取分子简介失败');
+        document.getElementById('fake-popup-content').innerText =
+          '获取分子简介失败';
       }
     });
     wrapper.appendChild(helpBtn);
