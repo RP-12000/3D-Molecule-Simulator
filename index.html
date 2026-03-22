@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>What the Mole</title>
-  <!-- 本地 Icon -->
-  <link rel="icon" href="/public/favicon.ico">
-  <!-- 本地 JSmol -->
-  <script src="src/jsmol.js"></script>
+  <title>3D Molecule Simulator</title>
+
+  <!-- 网站图标 -->
+  <link rel="icon" href="./public/favicon.ico">
 
   <!-- 样式表 -->
   <link rel="stylesheet" href="./public/style.css">
+
+  <!-- JSmol 脚本 -->
+  <script src="https://chemapps.stolaf.edu/jmol/jsmol/JSmol.min.js"></script>
 </head>
 
 <body>
@@ -17,8 +19,8 @@
   <!-- 左侧控制面板 -->
   <div class="left">
     <h1 class="page-title">
-      <img src="/public/icon.png" alt="icon" class="title-icon">
-      What the Mole
+      <img src="./public/icon.png" alt="icon" class="title-icon">
+      What the Mol
     </h1>
 
     <!-- 输入类型选择 -->
@@ -31,21 +33,16 @@
 
     <!-- 输入框 -->
     <p id="inputLabel">Enter SMILES string:</p>
-    <label for="moleculeInput"></label><input
-      id="moleculeInput"
-      type="text"
-    />
+    <input id="moleculeInput" type="text" placeholder="Enter SMILES e.g. CCO">
 
     <label for="totalTrials">Total trials:</label>
-    <input type="number" id="totalTrials" value="1000000"/>
+    <input type="number" id="totalTrials" value="1000000">
 
     <button id="generateBtn">Generate</button>
 
     <!-- 示例按钮 -->
     <div class="examples">
       <p>Try examples:</p>
-
-      <!-- SMILES 示例 -->
       <div id="examples-smiles" class="example-row">
         <button data-type="smiles" data-value="O">O</button>
         <button data-type="smiles" data-value="CCO">CCO</button>
@@ -53,7 +50,6 @@
         <button data-type="smiles" data-value="c1ccccc1">c1ccccc1</button>
       </div>
 
-      <!-- 化学式示例 -->
       <div id="examples-formula" class="example-row">
         <button data-type="formula" data-value="H2O">H₂O</button>
         <button data-type="formula" data-value="C2H6O">C₂H₆O</button>
@@ -61,7 +57,6 @@
         <button data-type="formula" data-value="C6H6">C₆H₆</button>
       </div>
 
-      <!-- 化学式示例 -->
       <div id="examples-ai" class="example-row">
         <button data-type="ai" data-value="Water">Water</button>
         <button data-type="ai" data-value="Vinegar">Vinegar</button>
@@ -89,10 +84,34 @@
   </div>
 </div>
 
-<!-- 业务逻辑 -->
-<script type="module" src="/src/main.js"></script>
+<!-- 浏览器端业务逻辑 -->
+<script type="module" src="./src/main.js"></script>
 
 <!-- 背景动画 -->
-<script src="src/background.js"></script>
+<script src="./src/background.js"></script>
 </body>
 </html>
+<div style="display: flex; align-items: center; gap: 5px;">
+  <input
+    type="text"
+    id="smilesInput"
+    placeholder="Enter SMILES or formula"
+    style="padding: 5px; width: 250px;"
+  />
+  <button
+    id="helpButton"
+    style="padding: 5px;"
+    onclick="showHelp()"
+  >?</button>
+</div>
+
+<script>
+  function showHelp() {
+    alert(
+      "Input format:\n\n" +
+      "• SMILES: e.g., CCO for ethanol\n" +
+      "• Chemical formula: e.g., C2H6O\n\n" +
+      "You must enter at least one of them."
+    );
+  }
+</script>
