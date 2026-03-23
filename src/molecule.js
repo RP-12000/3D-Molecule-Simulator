@@ -1,8 +1,5 @@
-const Jmol = window.Jmol; // 全局 JSmol
+const Jmol = window.Jmol;
 
-// --------------------------------------------------
-// 调用后端 /generate
-// --------------------------------------------------
 export async function fetchGenerate(input, type = 'smiles') {
   const url = 'http://127.0.0.1:8000/generate';
 
@@ -35,9 +32,6 @@ export async function fetchGenerate(input, type = 'smiles') {
   return data; // { formula, smiles, sdf, iter }
 }
 
-// --------------------------------------------------
-// 渲染 SDF
-// --------------------------------------------------
 export function renderSDF(sdf, containerId) {
   if (!Jmol) {
     console.error('Jmol 未加载');
@@ -62,7 +56,19 @@ export function renderSDF(sdf, containerId) {
 }
 
 export async function fetchProgress() {
-  const res = await fetch("http://127.0.0.1:8000/progress");
+  const res = await fetch('http://127.0.0.1:8000/progress');
   if (!res.ok) return null;
   return await res.json();
+}
+
+export async function fetchValidity(smiles) {
+  const res = await fetch('http://127.0.0.1:8000/validity', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: smiles }),
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.verdict;
 }

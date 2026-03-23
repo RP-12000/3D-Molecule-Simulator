@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>What the Mole</title>
-  <!-- 本地 Icon -->
-  <link rel="icon" href="/public/favicon.ico">
-  <!-- 本地 JSmol -->
-  <script src="src/jsmol.js"></script>
+  <meta charset="UTF-8" />
+  <title>What the Mol</title>
 
-  <!-- 样式表 -->
-  <link rel="stylesheet" href="./public/style.css">
+  <!-- Icons -->
+  <link rel="icon" href="./public/favicon.ico" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./public/style.css" />
+
+  <!-- JSmol (must load before main.js) -->
+  <script src="./src/jsmol.js"></script>
 </head>
-
 <body>
 <div class="container">
-  <!-- 左侧控制面板 -->
-  <div class="left">
+
+  <!-- LEFT PANEL -->
+  <aside class="left">
     <h1 class="page-title">
-      <img src="/public/icon.png" alt="icon" class="title-icon">
-      What the Mole
+      <img src="./public/icon.png" alt="icon" class="title-icon" />
+      What the Mol
     </h1>
 
-    <!-- 输入类型选择 -->
     <p id="inputType">Input type:</p>
+
     <div class="input-switch">
-      <button id="SMILES">SMILES</button>
-      <button id="Random">RandomChem</button>
+      <button id="SMILES" class="active">SMILES</button>
+      <button id="Random">Formula</button>
       <button id="AIConvert">AI Magic</button>
     </div>
 
-    <!-- 输入框 -->
     <p id="inputLabel">Enter SMILES string:</p>
-    <label for="moleculeInput"></label><input
-      id="moleculeInput"
-      type="text"
-    />
 
-    <label for="totalTrials">Total trials:</label>
-    <input type="number" id="totalTrials" value="1000000"/>
+    <div class="input-row">
+      <label for="moleculeInput"></label><input id="moleculeInput" type="text" placeholder="Enter SMILES e.g. CCO" />
+      <button id="validityBtn" class="help-btn" title="AI stability analysis">?</button>
+    </div>
+
+    <div id="validityPanel" class="validity-panel">
+      <h3>AI Validity Analysis</h3>
+      <div id="validityContent">
+        No analysis yet.
+      </div>
+    </div>
 
     <button id="generateBtn">Generate</button>
 
-    <!-- 示例按钮 -->
+    <!-- EXAMPLES -->
     <div class="examples">
       <p>Try examples:</p>
 
-      <!-- SMILES 示例 -->
       <div id="examples-smiles" class="example-row">
         <button data-type="smiles" data-value="O">O</button>
         <button data-type="smiles" data-value="CCO">CCO</button>
@@ -53,16 +58,14 @@
         <button data-type="smiles" data-value="c1ccccc1">c1ccccc1</button>
       </div>
 
-      <!-- 化学式示例 -->
-      <div id="examples-formula" class="example-row">
+      <div id="examples-formula" class="example-row" style="display:none">
         <button data-type="formula" data-value="H2O">H₂O</button>
         <button data-type="formula" data-value="C2H6O">C₂H₆O</button>
         <button data-type="formula" data-value="CO2">CO₂</button>
         <button data-type="formula" data-value="C6H6">C₆H₆</button>
       </div>
 
-      <!-- 化学式示例 -->
-      <div id="examples-ai" class="example-row">
+      <div id="examples-ai" class="example-row" style="display:none">
         <button data-type="ai" data-value="Water">Water</button>
         <button data-type="ai" data-value="Vinegar">Vinegar</button>
         <button data-type="ai" data-value="Carbon Dioxide">Carbon Dioxide</button>
@@ -70,29 +73,30 @@
       </div>
     </div>
 
-    <!-- 状态显示 -->
+    <!-- STATUS -->
     <div class="status">
-      <p id="moleculeName">Formula: </p>
-      <p id="moleculeSmiles">SMILES: </p>
-      <p id="Iterations">Iterations: </p>
+      <p id="moleculeName">Formula:</p>
+      <p id="moleculeSmiles">SMILES:</p>
+      <p id="Iterations"></p>
       <progress id="iterationProgress" value="0" max="1"></progress>
     </div>
-  </div>
+  </aside>
 
-  <!-- 右侧 3D 渲染面板 -->
-  <div class="right">
+  <!-- RIGHT PANEL -->
+  <main class="right">
     <h2>3D Molecule Viewer</h2>
     <div id="viewer">
       <div class="viewer-background"></div>
       <div id="viewer-canvas"></div>
     </div>
-  </div>
+  </main>
+
 </div>
 
-<!-- 业务逻辑 -->
-<script type="module" src="/src/main.js"></script>
+<!-- App Logic -->
+<script type="module" src="./src/main.js"></script>
 
-<!-- 背景动画 -->
-<script src="src/background.js"></script>
+<!-- Background FX -->
+<script src="./src/background.js"></script>
 </body>
 </html>

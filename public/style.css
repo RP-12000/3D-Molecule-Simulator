@@ -1,292 +1,314 @@
-/* ---------------- RESET ---------------- */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",Roboto,Arial,sans-serif;
+ /* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-/* ---------------- BODY ---------------- */
-body{
-    min-height:100vh;
+/* ================= BODY ================= */
+body {
+    min-height: 100vh;
     background:
             radial-gradient(circle at 10% 20%, rgba(56,189,248,0.25), transparent 35%),
             radial-gradient(circle at 80% 70%, rgba(14,165,233,0.25), transparent 40%),
             linear-gradient(140deg,#020617,#0f172a,#020617);
-    color:#e5e7eb;
-    display:flex;
-    flex-direction:column;
-    overflow-x:hidden;
-    position:relative;
-}
-
-/* ---------------- FLOATING CHEMISTRY FORMULAS ---------------- */
-.floating-molecule {
-    position:fixed;
-    font-size:50px;
-    font-weight:bold;
-    color: rgba(255,255,255,0.15);
-    pointer-events:none;
-    user-select:none;
-    z-index:0;
-    white-space:nowrap;
-    text-shadow: 0 0 5px rgba(255,255,255,0.4);
-}
-
-/* ---------------- STAR PARTICLES ---------------- */
-body::after{
-    content:"";
-    position:fixed;
-    top:0;
-    left:0;
-    width:200%;
-    height:200%;
-    background:radial-gradient(circle,#38bdf8 1px,transparent 1px);
-    background-size:70px 70px;
-    opacity:0.06;
-    animation:particlesMove 100s linear infinite;
-    pointer-events:none;
-}
-
-@keyframes particlesMove{
-    0%{transform:translate(0,0);}
-    100%{transform:translate(-900px,-900px);}
-}
-
-/* ---------------- LAYOUT ---------------- */
-.container{
-    display:flex;
-    height:100vh; /* 占满整个屏幕 */
-    padding:10px;
-    gap:30px;
-    position:relative;
-    z-index:1;
-}
-
-/* ---------------- LEFT PANEL ---------------- */
-.left{
-    width:28%;
-    background:rgba(30,41,59,0.85);
-    padding:40px;
-    border-radius:18px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.05);
-    display:flex;
-    flex-direction:column;
-    box-sizing:border-box;
-}
-
-/* ---------------- RIGHT PANEL ---------------- */
-.right{
-    width:72%;
-    background:rgba(15,23,42,0.9);
-    padding:25px;
-    border-radius:18px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
-    display:flex;
+    color: #e5e7eb;
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    border:1px solid rgba(255,255,255,0.05);
-    height:100%; /* 占满父容器 */
-    box-sizing:border-box;
+    overflow-x: hidden;
 }
 
-/* ---------------- TITLES ---------------- */
-h1{ font-size:34px; color:#38bdf8; margin-bottom:20px; letter-spacing:1px; }
-.right h2{ margin-bottom:20px; color:#38bdf8; }
-
-/* ---------------- TEXT ---------------- */
-p{ opacity:0.9; margin-top:10px; font-size:15px; }
-
-/* ---------------- INPUT ---------------- */
-input{
-    width:100%; padding:14px; margin-top:15px;
-    border-radius:12px;
-    outline:none;
-    font-size:16px; background:#020617; color: #ffffff; border:1px solid #334155;
-    transition:all 0.25s;
-}
-input:focus{
-    border:1px solid #38bdf8;
-    box-shadow: 0 0 10px #38bdf8, 0 0 25px rgba(56,189,248,0.6);
+/* ================= LAYOUT ================= */
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 10px;
+    gap: 30px;
 }
 
-/* ---------------- BUTTON ---------------- */
-button{
-    margin-top:15px;
-    padding:13px;
-    width:100%;
-    border:none;
-    border-radius:12px;
-    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
-    color:white;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:all 0.25s;
-}
-button:hover{
-    transform:translateY(-3px);
-    box-shadow: 0 10px 25px rgba(56,189,248,0.6);
+.left {
+    width: 28%;
+    background: rgba(30,41,59,0.85);
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
 }
 
-/* ---------------- EXAMPLE BUTTONS ---------------- */
-.examples{ margin-top:30px; }
-.examples button{
-    width:auto; padding:8px 15px; margin:6px;
-    font-size:14px; background:#1e293b; border:1px solid #334155;
-}
-.examples button:hover{ background:#38bdf8; }
-
-/* ---------------- STATUS ---------------- */
-.status{ margin-top:25px; font-weight:500; color:#94a3b8; }
-#iterationProgress{
-    width:100%;
-    margin-top:10px;
-    height:16px;
+.right {
+    width: 72%;
+    background: rgba(15,23,42,0.9);
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    display: flex;
+    flex-direction: column;
 }
 
-/* ---------------- 3D VIEWER ---------------- */
-#viewer {
+/* ================= TITLES ================= */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 34px;
+    color: #38bdf8;
+    margin-bottom: 20px;
+}
+
+.title-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.right h2 {
+    color: #38bdf8;
+    margin-bottom: 20px;
+}
+
+p {
+    margin-top: 10px;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+/* ================= INPUT ================= */
+ #inputLabel {
+     margin-top: 20px;
+ }
+
+input {
     flex: 1;
     width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border-radius: 12px;
+    background: #020617;
+    color: #fff;
+    border: 1px solid #334155;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px #38bdf8;
+}
+
+ .input-row {
+     align-items: center;
+     gap: 6px;
+     position: relative;
+     display: block;
+ }
+
+ .help-btn {
+     position: absolute;
+     right: -32px;
+     margin-top: -3px;
+     top: 50%;
+     width: 22px;
+     height: 22px;
+     padding: 0;
+     border-radius: 50%;
+     background: #1e293b;
+     border: 1px solid #334155;
+     color: #94a3b8;
+     font-size: 13px;
+     font-weight: bold;
+     cursor: pointer;
+     display: none;
+ }
+
+ .help-btn:hover {
+     color: #38bdf8;
+     border-color: #38bdf8;
+ }
+
+ .validity-panel {
+     position: fixed;
+     top: 90px;
+     right: -360px;
+     width: 340px;
+     height: calc(100% - 125px);
+     background: rgba(15,23,42,0.96);
+     border-left: 2px solid #38bdf8;
+     padding: 18px;
+     transition: right 0.35s ease;
+     z-index: 999;
+     overflow-y: auto;
+ }
+
+ .validity-panel.open {
+     right: 0;
+ }
+
+ #validityContent {
+     margin-top: 12px;
+     font-size: 14px;
+     line-height: 1.5;
+     white-space: pre-wrap;
+ }
+
+/* ================= BUTTONS ================= */
+button {
+    margin-top: 15px;
+    padding: 13px;
+    width: 100%;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button.active {
+    box-shadow: 0 0 15px rgba(56,189,248,0.8);
+}
+
+#AIConvert {
+    background: linear-gradient(135deg,#8b5cf6,#7c3aed);
+}
+
+.input-switch {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.input-switch button {
+    flex: 1;
+    margin: 0;
+    font-size: 13px;
+}
+
+/* ================= EXAMPLES ================= */
+ .examples {
+     margin-top: 30px;
+ }
+
+ .example-row {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 6px;
+     margin-bottom: 10px;
+ }
+
+ #examples-smiles button,
+ #examples-formula button {
+     width: auto;
+     padding: 6px 16px;
+     font-size: 13px;
+     background: #1e293b;
+     border: 1px solid #334155;
+ }
+
+ #examples-ai button {
+     width: auto;
+     padding: 6px 6px;
+     font-size: 13px;
+     background: #1e293b;
+     border: 1px solid #334155;
+ }
+
+ .examples button:hover {
+     background: #38bdf8;
+ }
+
+/* ================= STATUS ================= */
+.status {
+    margin-top: 25px;
+    color: #94a3b8;
+}
+
+ #moleculeName,
+ #moleculeSmiles {
+     white-space: pre-wrap;
+     word-break: break-all;
+     overflow-wrap: anywhere;
+     line-height: 1.4;
+ }
+
+#iterationProgress {
+    width: 100%;
+    margin-top: 10px;
+    height: 16px;
+}
+
+/* ================= VIEWER ================= */
+#viewer {
+    flex: 1;
     border-radius: 14px;
     border: 2px solid #38bdf8;
-    display: flex;
     position: relative;
     overflow: hidden;
-    min-height:300px;
+    z-index: 1;
 }
+
 #viewer-canvas {
-    flex: 1;
     width: 100%;
     height: 100%;
 }
+
 .viewer-background {
-    position:absolute;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    z-index:0;
-    pointer-events:none;
+    position: absolute;
+    inset: 0;
     background:
             radial-gradient(circle at 30% 30%, rgba(72,61,139,0.25), transparent 50%),
             radial-gradient(circle at 70% 70%, rgba(123,104,238,0.15), transparent 45%),
             linear-gradient(135deg,#0b0c1a,#1b1f3a,#0b0c1a);
 }
-#viewer::after{
-    content:"";
-    position:absolute;
-    top:-100%; left:0;
-    width:100%; height:200%;
-    background:linear-gradient(transparent, rgba(56,189,248,0.15), transparent);
-    animation:scan 6s linear infinite;
-    pointer-events:none;
-    z-index:1;
-}
-@keyframes scan{
-    0%{top:-100%;}
-    100%{top:100%;}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+    .left, .right {
+        width: 100%;
+    }
+    .right {
+        height: 500px;
+    }
 }
 
-/* ---------------- SCROLLBAR ---------------- */
-::-webkit-scrollbar{ width:8px; }
-::-webkit-scrollbar-track{ background:#020617; }
-::-webkit-scrollbar-thumb{ background:#38bdf8; border-radius:10px; }
+ /* ---------------- FLOATING CHEMISTRY FORMULAS ---------------- */
+ .floating-molecule {
+     position:fixed;
+     font-size:50px;
+     font-weight:bold;
+     color: rgba(255,255,255,0.15);
+     pointer-events:none;
+     user-select:none;
+     z-index:-1;
+     white-space:nowrap;
+     text-shadow: 0 0 5px rgba(255,255,255,0.4);
+ }
 
-/* ---------------- RESPONSIVE ---------------- */
-@media (max-width:900px){
-    .container{ flex-direction:column; height:auto; }
-    .left{ width:100%; }
-    .right{ width:100%; height:500px; }
-    #viewer{ height:100%; min-height:300px; }
-}
+ /* ---------------- STAR PARTICLES ---------------- */
+ body::after{
+     content:"";
+     position:fixed;
+     top:0;
+     left:0;
+     width:200%;
+     height:200%;
+     background:radial-gradient(circle,#38bdf8 1px,transparent 1px);
+     background-size:70px 70px;
+     opacity:0.06;
+     animation:particlesMove 100s linear infinite;
+     pointer-events:none;
+ }
 
-/*------------状态选择的几个小button------------*/
-button.active{
-    background: linear-gradient(135deg,#38bdf8,#0ea5e9);
-    color:white;
-    box-shadow:0 0 15px rgba(56,189,248,0.8);
-}
-button.inactive{
-    background:#1e293b;
-    border:1px solid #334155;
-}
-
-#inputType{ margin-top:10px; }
-#SMILES{ margin-right:4%; }
-/* 调整按钮容器，让三个按钮平分空间 */
-/* 强制覆盖之前的布局设置 */
-.input-switch {
-    display: flex !important;
-    gap: 10px !important; /* 按钮之间的间距 */
-    width: 100% !important;
-    margin-top: 15px !important;
-}
-
-#AIConvert{
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.input-switch button {
-    flex: 1 !important;    /* 核心：让所有按钮平分剩余空间，比例 1:1:1 */
-    width: 0 !important;    /* 配合 flex: 1 使用，确保平分 */
-    margin: 0 !important;   /* 清除可能存在的右边距 */
-    padding: 10px 5px !important; /* 稍微减小内边距，防止文字太挤 */
-    font-size: 13px !important;   /* 稍微调小字号 */
-    white-space: nowrap !important; /* 禁止文字换行 */
-    min-width: 0 !important;
-}
-
-input.disabled {
-    background-color: #eee;
-    color: #999;
-    cursor: not-allowed;
-}
-
-.example-row {
-    display: flex;
-    flex-direction: row;
-    gap: 3px;
-    margin-bottom: 8px;
-    flex-wrap: wrap; /* 屏幕窄时自动换行 */
-}
-
-.example-row#examples-smiles button {
-    padding: 6px 10px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.example-row#examples-formula button {
-    padding: 6px 10px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.example-row#examples-ai button {
-    padding: 6px 5px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-
-.page-title {
-    display: flex;
-    align-items: center;   /* 垂直居中 */
-    gap: 8px;              /* 图标和文字之间的间距 */
-    font-size: 2em;        /* 可以根据需要调整文字大小 */
-}
-
-.title-icon {
-    width: 32px;           /* 图标宽度 */
-    height: 32px;          /* 图标高度 */
-}
-
-#MoleculeSmiles, #moleculeSmiles, #moleculeName {
-    white-space: pre-wrap;   /* 保留空格并允许换行 */
-    word-break: break-all;   /* 强制在任意位置换行 */
-    overflow-wrap: break-word; /* 兼容更多浏览器 */
-}
+ @keyframes particlesMove{
+     0%{transform:translate(0,0);}
+     100%{transform:translate(-900px,-900px);}
+ }
