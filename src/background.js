@@ -1,4 +1,3 @@
-// ----------------- FLOATING MOLECULES -----------------
 const molecules = [
   'H₂O',
   'CO₂',

@@ -1,17 +1,8 @@
-// molecule.js
-// 支持浏览器渲染和 Node.js fetch 测试
+const Jmol = window.Jmol;
 
-// --------------------------------------------------
-// 判断环境
-// --------------------------------------------------
-const isBrowser = typeof window !== 'undefined';
-const Jmol = isBrowser ? window.Jmol : null;
-
-// --------------------------------------------------
-// 调用后端 /generate
-// --------------------------------------------------
 export async function fetchGenerate(input, type = 'smiles') {
   const url = 'http://127.0.0.1:8000/generate';
+
   const body = type === 'smiles' ? { smiles: input } : { formula: input };
 
   const res = await fetch(url, {
@@ -29,35 +20,25 @@ export async function fetchGenerate(input, type = 'smiles') {
       const text = await res.text();
       if (text) detail = text;
     }
-    throw new Error('生成失败: ' + detail);
+    alert("Failure: " + detail);
   }
 
   const data = await res.json();
 
-  if (!data.sdf || typeof data.sdf !== 'string' || data.sdf.trim() === '') {
-    throw new Error('后端未返回有效 SDF');
+  if (!data.sdf || typeof data.sdf !== 'string') {
+    throw new Error('SDF invalid');
   }
 
-  return data; // { formula, smiles, sdf, iter, message }
+  return data; // { formula, smiles, sdf, iter }
 }
 
-// --------------------------------------------------
-// 渲染 SDF（仅浏览器可用）
-// --------------------------------------------------
 export function renderSDF(sdf, containerId) {
-  if (!isBrowser) {
-    console.warn('renderSDF 只能在浏览器中调用');
-    return;
-  }
-
   if (!Jmol) {
-    console.error('Jmol 未加载');
+    console.error('Jmol not loaded');
     return;
   }
-
   const container = document.getElementById(containerId);
   if (!container) return;
-
   container.innerHTML = Jmol.getAppletHtml('jmolApplet', {
     width: '100%',
     height: '100%',
@@ -74,16 +55,20 @@ export function renderSDF(sdf, containerId) {
   });
 }
 
-// --------------------------------------------------
-// 获取生成进度
-// --------------------------------------------------
 export async function fetchProgress() {
-  try {
-    const res = await fetch('http://127.0.0.1:8000/progress');
-    if (!res.ok) return null;
-    return await res.json(); // { verdict, percentage }
-  } catch (e) {
-    console.error('fetchProgress failed', e);
-    return null;
-  }
+  const res = await fetch('http://127.0.0.1:8000/progress');
+  if (!res.ok) return null;
+  return await res.json();
+}
+
+export async function fetchValidity(smiles) {
+  const res = await fetch('http://127.0.0.1:8000/validity', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: smiles }),
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.verdict;
 }
