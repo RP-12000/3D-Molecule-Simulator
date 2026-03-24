@@ -26,6 +26,10 @@ async function getSmilesFromAI(input) {
 }
 
 export async function generateMolecule() {
+  try {
+    await fetch('http://127.0.0.1:8000/stop', { method: 'POST' });
+  } catch {}
+
   const inputEl = document.getElementById('moleculeInput');
   const formulaEl = document.getElementById('moleculeName');
   const smilesEl = document.getElementById('moleculeSmiles');
@@ -98,9 +102,6 @@ export async function generateMolecule() {
     if (smilesEl && mode !== 'ai') smilesEl.innerText = `SMILES: ${data.smiles}`
 
     if (mode === 'formula' && data.smiles) {
-      const verdict = await fetchValidity(data.smiles);
-      window._validityVerdict = verdict; // 缓存
-      document.getElementById('validityContent').innerText = verdict;
       if (validityBtn) validityBtn.style.display = 'block';
     }
     iterationVerdict = data.iter;
@@ -200,7 +201,10 @@ window.addEventListener('DOMContentLoaded', () => {
   aiBtn.addEventListener('click', () => window.setMode('ai'));
   setMode('smiles');
 
-  validityBtn.addEventListener('click', (e) => {
+  validityBtn.addEventListener('click', async (e) => {
+    const verdict = await fetchValidity(data.smiles);
+    window._validityVerdict = verdict; // 缓存
+    window.innerText = verdict;
     e.stopPropagation();
     validityPanel.classList.toggle('open');
   });
