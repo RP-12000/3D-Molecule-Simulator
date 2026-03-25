@@ -37,6 +37,7 @@ export async function generateMolecule() {
   const progressEl = document.getElementById('iterationProgress');
   const viewerCanvas = document.getElementById('viewer-canvas');
   const validityBtn = document.getElementById('validityBtn');
+  const validityPanel = document.getElementById('validityContent');
 
   let userInput = inputEl?.value.trim();
   if (!userInput) {
@@ -84,6 +85,7 @@ export async function generateMolecule() {
     if(mode === 'smiles'){
       if (formulaEl) formulaEl.innerText = `Formula: calculating...`;
       if (smilesEl) smilesEl.innerText = `Smiles: ${userInput}`;
+      if (iterEl) iterEl.innerText = ``;
     }
     else if (mode === 'formula'){
       if (formulaEl) formulaEl.innerText = `Formula: ${userInput}`;
@@ -91,17 +93,21 @@ export async function generateMolecule() {
     }
     else{
       if (formulaEl) formulaEl.innerText = `Formula: calculating...`;
+      if (iterEl) iterEl.innerText = ``;
     }
 
-    const data = await fetchGenerate(finalInput, requestType);
-
+    const data = await fetchGenerate(finalInput, requestType)
     renderSDF(data.sdf, 'viewer-canvas');
     if (progressTimer) clearInterval(progressTimer);
 
     if (formulaEl) formulaEl.innerText = `Formula: ${data.formula}`;
-    if (smilesEl && mode !== 'ai') smilesEl.innerText = `SMILES: ${data.smiles}`
+    if (smilesEl && mode !== 'ai')
+      smilesEl.innerText = `SMILES: ${data.smiles}`;
 
     if (mode === 'formula' && data.smiles) {
+      const verdict = await fetchValidity(data.smiles);
+      window._validityVerdict = verdict; // 缓存
+      validityPanel.innerText = verdict;
       if (validityBtn) validityBtn.style.display = 'block';
     }
     iterationVerdict = data.iter;
@@ -202,9 +208,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setMode('smiles');
 
   validityBtn.addEventListener('click', async (e) => {
-    const verdict = await fetchValidity(data.smiles);
-    window._validityVerdict = verdict; // 缓存
-    window.innerText = verdict;
     e.stopPropagation();
     validityPanel.classList.toggle('open');
   });
