@@ -105,9 +105,14 @@ export async function generateMolecule() {
       smilesEl.innerText = `SMILES: ${data.smiles}`;
 
     if (mode === 'formula' && data.smiles) {
-      const verdict = await fetchValidity(data.smiles);
-      window._validityVerdict = verdict; // 缓存
-      validityPanel.innerText = verdict;
+      if(!DEBUG){
+        const verdict = await fetchValidity(data.smiles);
+        window._validityVerdict = verdict; // 缓存
+        validityPanel.innerText = verdict;
+      }
+      else{
+        validityPanel.innerText = "DEBUG mode: validity not fetched";
+      }
       if (validityBtn) validityBtn.style.display = 'block';
     }
     iterationVerdict = data.iter;
@@ -119,8 +124,8 @@ export async function generateMolecule() {
     if (iterEl) iterEl.innerText = '';
   } finally {
     clearInterval(progressTimer);
-    if (iterEl && mode === 'formula')
-      iterEl.innerText = `Total Iterations: ${iterationVerdict}`;
+    if (iterEl) iterEl.innerText = '';
+    if (mode === 'formula') iterEl.innerText = `Total Iterations: ${iterationVerdict}`;
     if (progressEl) progressEl.value = progressEl.max;
     if (viewerCanvas) viewerCanvas.classList.remove('loading');
   }
@@ -240,4 +245,36 @@ window.addEventListener('beforeunload', async () => {
   try {
     await fetch('http://127.0.0.1:8000/stop', { method: 'POST' });
   } catch {}
+});
+
+let DEBUG = false;
+let changed = false;
+let dHoldTimer = null;
+const HOLD_TIME = 1000; // 3 秒
+
+window.addEventListener('keydown', (e) => {
+  if (e.key.toLowerCase() !== 'd') return;
+
+  // 防止 keydown 自动重复多次启动定时器
+  if (dHoldTimer !== null) return;
+
+  dHoldTimer = setTimeout(() => {
+    if(!changed){
+      DEBUG = !DEBUG;
+      console.log('DEBUG mode:', DEBUG);
+      dHoldTimer = null;
+      changed = true;
+    }
+  }, HOLD_TIME);
+});
+
+window.addEventListener('keyup', (e) => {
+  if (e.key.toLowerCase() !== 'd') return;
+
+  // 提前松开，取消进入 debug
+  if (dHoldTimer !== null) {
+    clearTimeout(dHoldTimer);
+    dHoldTimer = null;
+    changed = false;
+  }
 });
