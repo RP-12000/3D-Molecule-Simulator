@@ -151,6 +151,28 @@ input:focus {
      white-space: pre-wrap;
  }
 
+ .analysis-toggle {
+     align-self: flex-start;
+     margin-top: 6px;
+     display: inline-flex;        /* 行内，不撑满 */
+     align-items: center;         /* 垂直居中对齐 */
+     gap: 6px;
+
+     font-size: 12px;
+     color: #d1d5db;
+ }
+
+ .analysis-toggle label {
+     cursor: pointer;
+     user-select: none;
+     line-height: 1;              /* 关键：消除基线偏移 */
+ }
+
+ .analysis-toggle input[type="checkbox"] {
+     cursor: pointer;
+     margin: 0;                   /* 去掉浏览器默认 margin */
+ }
+
 /* ================= BUTTONS ================= */
 button {
     margin-top: 15px;

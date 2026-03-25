@@ -37,6 +37,7 @@ export async function generateMolecule() {
   const progressEl = document.getElementById('iterationProgress');
   const viewerCanvas = document.getElementById('viewer-canvas');
   const validityBtn = document.getElementById('validityBtn');
+  const analysisToggle = document.getElementById('aiAnalysisToggle');
 
   let userInput = inputEl?.value.trim();
   if (!userInput) {
@@ -99,10 +100,25 @@ export async function generateMolecule() {
     if (progressTimer) clearInterval(progressTimer);
 
     if (formulaEl) formulaEl.innerText = `Formula: ${data.formula}`;
-    if (smilesEl && mode !== 'ai') smilesEl.innerText = `SMILES: ${data.smiles}`
+    if (smilesEl && mode !== 'ai')
+      smilesEl.innerText = `SMILES: ${data.smiles}`;
 
-    if (mode === 'formula' && data.smiles) {
-      if (validityBtn) validityBtn.style.display = 'block';
+    if (analysisToggle?.checked && data.smiles) {
+      try {
+        const verdict = await fetchValidity(data.smiles);
+        window._validityVerdict = verdict;
+
+        const validityContent = document.getElementById('validityContent');
+        if (validityContent) {
+          validityContent.innerText = verdict;
+        }
+
+        if (validityBtn) validityBtn.style.display = 'block';
+      } catch (e) {
+        console.error('AI analysis failed', e);
+      }
+    } else {
+      if (validityBtn) validityBtn.style.display = 'none';
     }
     iterationVerdict = data.iter;
     if(data.message !== "success") alert(data.message)
@@ -131,6 +147,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const smilesBtn = document.getElementById('SMILES');
   const randomBtn = document.getElementById('Random');
   const aiBtn = document.getElementById('AIConvert');
+  const analysisToggle = document.getElementById('aiAnalysisToggle');
+
   const inputEl = document.getElementById('moleculeInput');
   const validityBtn = document.getElementById('validityBtn');
   const validityPanel = document.getElementById('validityPanel');
@@ -150,6 +168,14 @@ window.addEventListener('DOMContentLoaded', () => {
       const smilesExamples = document.getElementById('examples-smiles');
       const formulaExamples = document.getElementById('examples-formula');
       const aiExamples = document.getElementById('examples-ai');
+
+      analysisToggle.addEventListener('change', () => {
+        if (!analysisToggle.checked) {
+          if (validityBtn) validityBtn.style.display = 'none';
+          const validityPanel = document.getElementById('validityPanel');
+          if (validityPanel) validityPanel.classList.remove('open');
+        }
+      });
 
       if (newMode === 'smiles') {
         // SMILES 模式
@@ -202,9 +228,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setMode('smiles');
 
   validityBtn.addEventListener('click', async (e) => {
-    const verdict = await fetchValidity(data.smiles);
-    window._validityVerdict = verdict; // 缓存
-    window.innerText = verdict;
     e.stopPropagation();
     validityPanel.classList.toggle('open');
   });
